@@ -10,7 +10,7 @@ using JetBrains.Annotations;
 
 namespace Microsoft.Data.Entity.Storage
 {
-    public interface IRelationalConnection : IDisposable
+    public interface IRelationalConnection : IConnection, IDisposable
     {
         string ConnectionString { get; }
 
@@ -21,10 +21,6 @@ namespace Microsoft.Data.Entity.Storage
         int? CommandTimeout { get; set; }
 
         DbTransaction DbTransaction { get; }
-
-        IRelationalTransaction BeginTransaction();
-
-        Task<IRelationalTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default(CancellationToken));
 
         IRelationalTransaction BeginTransaction(IsolationLevel isolationLevel);
 

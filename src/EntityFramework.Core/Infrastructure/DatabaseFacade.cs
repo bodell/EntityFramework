@@ -35,6 +35,12 @@ namespace Microsoft.Data.Entity.Infrastructure
         public virtual Task<bool> EnsureDeletedAsync(CancellationToken cancellationToken = default(CancellationToken))
             => this.GetService<IDatabaseCreator>().EnsureDeletedAsync(cancellationToken);
 
+        public virtual ITransaction BeginTransaction()
+            => this.GetService<IConnection>().BeginTransaction();
+
+        public virtual Task<ITransaction> BeginTransactionAsync(CancellationToken cancellationToken = default(CancellationToken))
+            => this.GetService<IConnection>().BeginTransactionAsync(cancellationToken);
+
         IServiceProvider IAccessor<IServiceProvider>.Service => ((IAccessor<IServiceProvider>)_context).Service;
     }
 }

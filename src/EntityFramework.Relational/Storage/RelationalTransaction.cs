@@ -14,6 +14,7 @@ namespace Microsoft.Data.Entity.Storage
 {
     public class RelationalTransaction : IRelationalTransaction
     {
+        private readonly IRelationalConnection _relationalConnection;
         private readonly DbTransaction _transaction;
         private readonly ILogger _logger;
         private readonly bool _transactionOwned;
@@ -35,14 +36,14 @@ namespace Microsoft.Data.Entity.Storage
                 throw new InvalidOperationException(RelationalStrings.TransactionAssociatedWithDifferentConnection);
             }
 
-            Connection = connection;
+            _relationalConnection = connection;
 
             _transaction = transaction;
             _logger = logger;
             _transactionOwned = transactionOwned;
         }
 
-        public virtual IRelationalConnection Connection { get; }
+        public virtual IConnection Connection => _relationalConnection;
 
         public virtual void Commit()
         {
@@ -83,9 +84,9 @@ namespace Microsoft.Data.Entity.Storage
 
         private void ClearTransaction()
         {
-            Debug.Assert(Connection.Transaction == null || Connection.Transaction == this);
+            Debug.Assert(_relationalConnection.Transaction == null || _relationalConnection.Transaction == this);
 
-            Connection.UseTransaction(null);
+            _relationalConnection.UseTransaction(null);
         }
 
         DbTransaction IAccessor<DbTransaction>.Service => _transaction;

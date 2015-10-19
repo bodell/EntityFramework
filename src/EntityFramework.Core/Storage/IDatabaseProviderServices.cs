@@ -15,6 +15,7 @@ namespace Microsoft.Data.Entity.Storage
     {
         string InvariantName { get; }
         IDatabase Database { get; }
+        IConnection Connection { get; }
         IDatabaseCreator Creator { get; }
         IValueGeneratorSelector ValueGeneratorSelector { get; }
         IConventionSetBuilder ConventionSetBuilder { get; }

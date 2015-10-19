@@ -83,6 +83,44 @@ namespace Microsoft.Data.Entity.Tests
         }
 
         [Fact]
+        public void Can_begin_transaction()
+        {
+            var connectionMock = new Mock<IConnection>();
+            var transaction = Mock.Of<ITransaction>();
+
+            connectionMock.Setup(m => m.BeginTransaction()).Returns(transaction);
+
+            var context = TestHelpers.Instance.CreateContext(
+                new ServiceCollection().AddInstance(connectionMock.Object));
+
+            Assert.Same(transaction, context.Database.BeginTransaction());
+
+            connectionMock.Verify(m => m.BeginTransaction(), Times.Once);
+        }
+
+        [Fact]
+        public void Can_begin_transaction_async()
+        {
+            var connectionMock = new Mock<IConnection>();
+            var transaction = Mock.Of<ITransaction>();
+
+            var transactionTask = new Task<ITransaction>(() => transaction);
+
+            connectionMock.Setup(m => m.BeginTransactionAsync(It.IsAny<CancellationToken>()))
+                .Returns(transactionTask);
+
+            var context = TestHelpers.Instance.CreateContext(
+                new ServiceCollection().AddInstance(connectionMock.Object));
+
+            var cancellationToken = new CancellationToken();
+
+            Assert.Same(transactionTask, context.Database.BeginTransactionAsync(cancellationToken));
+
+            connectionMock.Verify(m => m.BeginTransactionAsync(cancellationToken), Times.Once);
+        }
+
+
+        [Fact]
         public void Cannot_use_DatabaseFacade_after_dispose()
         {
             var context = TestHelpers.Instance.CreateContext();

@@ -62,14 +62,6 @@ namespace Microsoft.Data.Entity
         public static void CloseConnection([NotNull] this DatabaseFacade databaseFacade)
             => GetRelationalConnection(databaseFacade).Close();
 
-        public static IRelationalTransaction BeginTransaction([NotNull] this DatabaseFacade databaseFacade)
-            => GetRelationalConnection(databaseFacade).BeginTransaction();
-
-        public static Task<IRelationalTransaction> BeginTransactionAsync(
-            [NotNull] this DatabaseFacade databaseFacade,
-            CancellationToken cancellationToken = default(CancellationToken))
-            => GetRelationalConnection(databaseFacade).BeginTransactionAsync(cancellationToken);
-
         public static IRelationalTransaction BeginTransaction([NotNull] this DatabaseFacade databaseFacade, IsolationLevel isolationLevel)
             => GetRelationalConnection(databaseFacade).BeginTransaction(isolationLevel);
 

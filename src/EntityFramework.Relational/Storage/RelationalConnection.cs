@@ -72,7 +72,7 @@ namespace Microsoft.Data.Entity.Storage
 
         public virtual DbConnection DbConnection => _connection.Value;
 
-        public virtual IRelationalTransaction Transaction { get; [param: NotNull] protected set; }
+        public virtual IRelationalTransaction Transaction { get;[param: NotNull] protected set; }
 
         public virtual int? CommandTimeout
         {
@@ -92,11 +92,11 @@ namespace Microsoft.Data.Entity.Storage
         public virtual DbTransaction DbTransaction => Transaction?.GetService();
 
         [NotNull]
-        public virtual IRelationalTransaction BeginTransaction() => BeginTransaction(IsolationLevel.Unspecified);
+        public virtual ITransaction BeginTransaction() => BeginTransaction(IsolationLevel.Unspecified);
 
         [NotNull]
-        public virtual Task<IRelationalTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default(CancellationToken))
-            => BeginTransactionAsync(IsolationLevel.Unspecified, cancellationToken);
+        public virtual async Task<ITransaction> BeginTransactionAsync(CancellationToken cancellationToken = default(CancellationToken))
+            => await BeginTransactionAsync(IsolationLevel.Unspecified, cancellationToken);
 
         [NotNull]
         public virtual IRelationalTransaction BeginTransaction(IsolationLevel isolationLevel)
