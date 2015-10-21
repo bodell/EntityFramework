@@ -34,7 +34,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddScoped<InMemoryValueGeneratorSelector>()
                 .AddScoped<InMemoryDatabaseProviderServices>()
                 .AddScoped<IInMemoryDatabase, InMemoryDatabase>()
-                .AddScoped<InMemoryConnection>()
+                .AddScoped<InMemoryTransactionManager>()
                 .AddScoped<InMemoryDatabaseCreator>()
                 .AddQuery());
 

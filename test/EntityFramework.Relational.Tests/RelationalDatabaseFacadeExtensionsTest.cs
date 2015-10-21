@@ -85,7 +85,7 @@ namespace Microsoft.Data.Entity.Tests
         public void Can_begin_transaction_with_isolation_level()
         {
             var connectionMock = new Mock<IRelationalConnection>();
-            var transaction = Mock.Of<IRelationalTransaction>();
+            var transaction = Mock.Of<IDbContextTransaction>();
 
             connectionMock.Setup(m => m.BeginTransaction(It.IsAny<IsolationLevel>())).Returns(transaction);
 
@@ -103,9 +103,9 @@ namespace Microsoft.Data.Entity.Tests
         public void Can_begin_transaction_with_isolation_level_async()
         {
             var connectionMock = new Mock<IRelationalConnection>();
-            var transaction = Mock.Of<IRelationalTransaction>();
+            var transaction = Mock.Of<IDbContextTransaction>();
 
-            var transactionTask = new Task<IRelationalTransaction>(() => transaction);
+            var transactionTask = new Task<IDbContextTransaction>(() => transaction);
 
             connectionMock.Setup(m => m.BeginTransactionAsync(It.IsAny<IsolationLevel>(), It.IsAny<CancellationToken>()))
                 .Returns(transactionTask);
@@ -126,7 +126,7 @@ namespace Microsoft.Data.Entity.Tests
         {
             var connectionMock = new Mock<IRelationalConnection>();
             var dbTransaction = Mock.Of<DbTransaction>();
-            var transaction = Mock.Of<IRelationalTransaction>();
+            var transaction = Mock.Of<IDbContextTransaction>();
 
             connectionMock.Setup(m => m.UseTransaction(dbTransaction)).Returns(transaction);
 
@@ -142,9 +142,9 @@ namespace Microsoft.Data.Entity.Tests
         public void Can_commit_transaction()
         {
             var connectionMock = new Mock<IRelationalConnection>();
-            var transactionMock = new Mock<IRelationalTransaction>();
+            var transactionMock = new Mock<IDbContextTransaction>();
 
-            connectionMock.Setup(m => m.Transaction).Returns(transactionMock.Object);
+            connectionMock.Setup(m => m.CurrentTransaction).Returns(transactionMock.Object);
 
             var context = RelationalTestHelpers.Instance.CreateContext(
                 new ServiceCollection().AddInstance(connectionMock.Object));
@@ -158,9 +158,9 @@ namespace Microsoft.Data.Entity.Tests
         public void Can_roll_back_transaction()
         {
             var connectionMock = new Mock<IRelationalConnection>();
-            var transactionMock = new Mock<IRelationalTransaction>();
+            var transactionMock = new Mock<IDbContextTransaction>();
 
-            connectionMock.Setup(m => m.Transaction).Returns(transactionMock.Object);
+            connectionMock.Setup(m => m.CurrentTransaction).Returns(transactionMock.Object);
 
             var context = RelationalTestHelpers.Instance.CreateContext(
                 new ServiceCollection().AddInstance(connectionMock.Object));

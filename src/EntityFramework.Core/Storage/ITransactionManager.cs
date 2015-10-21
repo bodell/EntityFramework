@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Data.Entity.Storage
 {
-    public interface IConnection
+    public interface ITransactionManager
     {
-        ITransaction BeginTransaction();
+        IDbContextTransaction BeginTransaction();
 
-        Task<ITransaction> BeginTransactionAsync(CancellationToken cancellationToken = default(CancellationToken));
+        Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default(CancellationToken));
     }
 }

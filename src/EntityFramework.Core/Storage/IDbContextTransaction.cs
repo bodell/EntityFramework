@@ -5,10 +5,8 @@ using System;
 
 namespace Microsoft.Data.Entity.Storage
 {
-    public interface ITransaction : IDisposable
+    public interface IDbContextTransaction : IDisposable
     {
-        IConnection Connection { get; }
-
         void Commit();
         void Rollback();
     }

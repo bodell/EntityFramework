@@ -12,7 +12,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Microsoft.Data.Entity.Storage
 {
-    public class RelationalTransaction : IRelationalTransaction
+    public class RelationalTransaction : IDbContextTransaction, IAccessor<DbTransaction>
     {
         private readonly IRelationalConnection _relationalConnection;
         private readonly DbTransaction _transaction;
@@ -42,8 +42,6 @@ namespace Microsoft.Data.Entity.Storage
             _logger = logger;
             _transactionOwned = transactionOwned;
         }
-
-        public virtual IConnection Connection => _relationalConnection;
 
         public virtual void Commit()
         {
@@ -84,7 +82,7 @@ namespace Microsoft.Data.Entity.Storage
 
         private void ClearTransaction()
         {
-            Debug.Assert(_relationalConnection.Transaction == null || _relationalConnection.Transaction == this);
+            Debug.Assert(_relationalConnection.CurrentTransaction == null || _relationalConnection.CurrentTransaction == this);
 
             _relationalConnection.UseTransaction(null);
         }

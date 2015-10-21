@@ -41,7 +41,7 @@ namespace Microsoft.Data.Entity.Storage
         public virtual IProjectionExpressionVisitorFactory ProjectionExpressionVisitorFactory => GetService<ProjectionExpressionVisitorFactory>();
 
         public abstract IDatabase Database { get; }
-        public abstract IConnection Connection { get; }
+        public abstract ITransactionManager TransactionManager { get; }
         public abstract IDatabaseCreator Creator { get; }
         public abstract IModelSource ModelSource { get; }
         public abstract IValueGeneratorCache ValueGeneratorCache { get; }

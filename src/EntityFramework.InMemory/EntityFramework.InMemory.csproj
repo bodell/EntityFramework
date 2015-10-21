@@ -46,6 +46,7 @@
       <Link>Utilities\LoggingExtensions.cs</Link>
     </Compile>
     <Compile Include="Extensions\Internal\InMemoryLoggerExtensions.cs" />
+    <Compile Include="Infrastructure\InMemoryDbContextOptionsBuilder.cs" />
     <Compile Include="Infrastructure\Internal\InMemoryModelSource.cs" />
     <Compile Include="Infrastructure\Internal\InMemoryOptionsExtension.cs" />
     <Compile Include="Infrastructure\InMemoryLoggingEventId.cs" />
@@ -77,7 +78,7 @@
     <Compile Include="Query\Internal\InMemoryQueryModelVisitor.cs" />
     <Compile Include="Query\Internal\InMemoryQueryModelVisitorFactory.cs" />
     <Compile Include="Query\Internal\MaterializerFactory.cs" />
-    <Compile Include="Storage\InMemoryConnection.cs" />
+    <Compile Include="Storage\InMemoryTransactionManager.cs" />
     <Compile Include="Storage\InMemoryTransaction.cs" />
     <Compile Include="Storage\Internal\IInMemoryDatabase.cs" />
     <Compile Include="Storage\Internal\IInMemoryStore.cs" />
