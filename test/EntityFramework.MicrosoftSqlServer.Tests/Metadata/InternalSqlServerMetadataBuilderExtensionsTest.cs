@@ -88,7 +88,7 @@ namespace Microsoft.Data.Entity.SqlServer.Tests.Metadata
             Assert.False(keyBuilder.SqlServer(ConfigurationSource.Convention).Clustered(true));
             Assert.False(keyBuilder.Metadata.SqlServer().IsClustered);
 
-            Assert.Equal(1, keyBuilder.Metadata.Annotations.Count(
+            Assert.Equal(1, keyBuilder.IndexBuilder.Metadata.Annotations.Count(
                 a => a.Name.StartsWith(SqlServerAnnotationNames.Prefix, StringComparison.Ordinal)));
         }
 

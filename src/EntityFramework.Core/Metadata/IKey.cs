@@ -10,5 +10,7 @@ namespace Microsoft.Data.Entity.Metadata
     {
         IReadOnlyList<IProperty> Properties { get; }
         IEntityType DeclaringEntityType { get; }
+        IIndex Index { get; }
+        IEntityType EntityType { get; }
     }
 }

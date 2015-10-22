@@ -115,12 +115,20 @@ namespace Microsoft.Data.Entity.Metadata.Internal
 
             var actualProperties = GetOrCreateProperties(properties, configurationSource);
 
-            return _keyBuilders.GetOrAdd(
+            var keyBuilder = _keyBuilders.GetOrAdd(
                 () => Metadata.FindDeclaredKey(actualProperties),
                 () => Metadata.AddKey(actualProperties),
                 key => new InternalKeyBuilder(key, ModelBuilder),
                 ModelBuilder.ConventionDispatcher.OnKeyAdded,
                 configurationSource);
+
+            if (keyBuilder != null)
+            {
+                ModelBuilder.Entity(keyBuilder.Metadata.DeclaringEntityType.Name, ConfigurationSource.Convention)
+                    .HasIndex(keyBuilder.Metadata.Properties.Select(p => p.Name).ToList(), configurationSource);
+            }
+
+            return keyBuilder;
         }
 
         public virtual ConfigurationSource? RemoveKey([NotNull] Key key, ConfigurationSource configurationSource, bool canOverrideSameSource = true)
@@ -140,6 +148,11 @@ namespace Microsoft.Data.Entity.Metadata.Internal
 
             var removedKey = Metadata.RemoveKey(key.Properties);
             Debug.Assert(removedKey == key);
+
+            if (key.Index != null)
+            {
+                RemoveIndex(key.Index, configurationSource);
+            }
 
             RemoveShadowPropertiesIfUnused(key.Properties);
 
@@ -723,6 +736,12 @@ namespace Microsoft.Data.Entity.Metadata.Internal
             removedNavigation = navigationToPrincipal?.DeclaringEntityType.RemoveNavigation(navigationToPrincipal.Name);
             Debug.Assert(removedNavigation == navigationToPrincipal);
 
+            if (foreignKey.Index != null)
+            {
+                var removedIndexConfigurationSource = RemoveIndex(foreignKey.Index, configurationSource);
+                Debug.Assert(removedIndexConfigurationSource != null);
+            }
+
             var removedForeignKey = Metadata.RemoveForeignKey(foreignKey.Properties);
             Debug.Assert(removedForeignKey == foreignKey);
 
@@ -929,12 +948,19 @@ namespace Microsoft.Data.Entity.Metadata.Internal
         {
             Debug.Assert(Metadata.GetDeclaredForeignKeys().Contains(foreignKey));
 
-            return _relationshipBuilders.Value.GetOrAdd(
+            var relationship = _relationshipBuilders.Value.GetOrAdd(
                 () => foreignKey,
                 () => foreignKey,
                 fk => new InternalRelationshipBuilder(
                     foreignKey, ModelBuilder, ConfigurationSource.Explicit),
                 configurationSource);
+
+            if (relationship != null)
+            {
+                HasIndex(foreignKey.Properties, configurationSource);
+            }
+
+            return relationship;
         }
 
         public virtual IReadOnlyList<InternalRelationshipBuilder> GetRelationshipBuilders(
@@ -985,6 +1011,23 @@ namespace Microsoft.Data.Entity.Metadata.Internal
                     ? ModelBuilder.ConventionDispatcher.OnForeignKeyAdded
                     : (Func<InternalRelationshipBuilder, InternalRelationshipBuilder>)null,
                 configurationSource);
+
+            if (relationship != null)
+            {
+                HasIndex(dependentProperties, configurationSource);
+
+                foreach (var foreignKeyProperty in dependentProperties)
+                {
+                    var propertyBuilder = ModelBuilder.Entity(foreignKeyProperty.DeclaringEntityType.Name, ConfigurationSource.Convention)
+                        .Property(foreignKeyProperty.Name, ConfigurationSource.Convention);
+
+                    propertyBuilder.UseValueGenerator(null, ConfigurationSource.Convention);
+                    propertyBuilder.ValueGenerated(null, ConfigurationSource.Convention);
+                }
+            }
+
+            return relationship;
+        }
 
         public virtual InternalRelationshipBuilder Relationship(
             [NotNull] InternalEntityTypeBuilder targetEntityTypeBuilder,

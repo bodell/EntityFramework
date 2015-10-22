@@ -10,6 +10,7 @@ namespace Microsoft.Data.Entity.Metadata
     {
         IEntityType DeclaringEntityType { get; }
         IReadOnlyList<IProperty> Properties { get; }
+        IIndex Index { get; }
         IEntityType PrincipalEntityType { get; }
         IKey PrincipalKey { get; }
         INavigation DependentToPrincipal { get; }

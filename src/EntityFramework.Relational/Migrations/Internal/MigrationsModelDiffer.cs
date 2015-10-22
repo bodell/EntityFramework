@@ -322,7 +322,7 @@ namespace Microsoft.Data.Entity.Migrations.Internal
 
             var operations = Diff(source.GetPropertiesInHierarchy(), target.GetPropertiesInHierarchy(), diffContext)
                 .Concat(Diff(source.GetKeys(), target.GetKeys(), diffContext))
-                .Concat(Diff(source.GetIndexesInHierarchy(), target.GetIndexesInHierarchy(), diffContext));
+                .Concat(Diff(source.GetIndexesInHierarchy().Except(source.GetKeys().Select(key => key.Index)), target.GetIndexesInHierarchy().Except(target.GetKeys().Select(key => key.Index)), diffContext));
             foreach (var operation in operations)
             {
                 yield return operation;
@@ -350,7 +350,7 @@ namespace Microsoft.Data.Entity.Migrations.Internal
 
             yield return createTableOperation;
 
-            foreach (var operation in target.GetIndexesInHierarchy().SelectMany(Add))
+            foreach (var operation in target.GetIndexesInHierarchy().Except(target.GetKeys().Select(key => key.Index)).SelectMany(Add))
             {
                 yield return operation;
             }

@@ -104,6 +104,9 @@ namespace Microsoft.Data.Entity.Metadata
         }
 
         public virtual IReadOnlyList<Property> Properties { get; }
+
+        public virtual Index Index => DeclaringEntityType.FindIndex(Properties);
+
         public virtual Key PrincipalKey { get; }
         public virtual EntityType DeclaringEntityType { get; }
         public virtual EntityType PrincipalEntityType { get; }
@@ -168,6 +171,9 @@ namespace Microsoft.Data.Entity.Metadata
         IMutableKey IMutableForeignKey.PrincipalKey => PrincipalKey;
         IEntityType IForeignKey.DeclaringEntityType => DeclaringEntityType;
         IMutableEntityType IMutableForeignKey.DeclaringEntityType => DeclaringEntityType;
+
+        IIndex IForeignKey.Index => Index;
+
         IEntityType IForeignKey.PrincipalEntityType => PrincipalEntityType;
         IMutableEntityType IMutableForeignKey.PrincipalEntityType => PrincipalEntityType;
         INavigation IForeignKey.DependentToPrincipal => DependentToPrincipal;

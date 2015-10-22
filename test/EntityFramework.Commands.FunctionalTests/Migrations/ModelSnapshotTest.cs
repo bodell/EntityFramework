@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Microsoft.Data.Entity.Commands.TestUtilities;
@@ -279,8 +280,7 @@ builder.Entity(""Microsoft.Data.Entity.Commands.Migrations.ModelSnapshotTest+Ent
 ",
                 o =>
                     {
-                        Assert.Equal(1, o.GetEntityTypes().First().GetIndexes().Count());
-                        Assert.Equal("AlternateId", o.GetEntityTypes().First().GetIndexes().First().Properties[0].Name);
+                        Assert.Contains("AlternateId", o.GetEntityTypes().First().GetIndexes().Select(index => index.Properties.First().Name));
                     });
         }
 
@@ -304,11 +304,9 @@ builder.Entity(""Microsoft.Data.Entity.Commands.Migrations.ModelSnapshotTest+Ent
 ",
                 o =>
                     {
-                        Assert.Equal(1, o.GetEntityTypes().First().GetIndexes().Count());
-                        Assert.Collection(
-                            o.GetEntityTypes().First().GetIndexes().First().Properties,
-                            t => Assert.Equal("Id", t.Name),
-                            t => Assert.Equal("AlternateId", t.Name));
+                        Assert.Contains(
+                            new List<string> { "Id", "AlternateId"},
+                            o.GetEntityTypes().First().GetIndexes().Select(index => index.Properties).Select(t => t.Select(p => p.Name).ToList()));
                     });
         }
 

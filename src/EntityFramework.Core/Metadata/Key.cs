@@ -23,11 +23,18 @@ namespace Microsoft.Data.Entity.Metadata
         }
 
         public virtual IReadOnlyList<Property> Properties { get; }
+
+        public virtual Index Index => DeclaringEntityType.FindIndex(Properties);
+
         public virtual EntityType DeclaringEntityType => Properties[0].DeclaringEntityType;
         IReadOnlyList<IProperty> IKey.Properties => Properties;
         IReadOnlyList<IMutableProperty> IMutableKey.Properties => Properties;
         IEntityType IKey.DeclaringEntityType => DeclaringEntityType;
         IMutableEntityType IMutableKey.DeclaringEntityType => DeclaringEntityType;
+
+        IIndex IKey.Index => Index;
+
+        IEntityType IKey.EntityType => DeclaringEntityType;
 
         [UsedImplicitly]
         private string DebuggerDisplay => Property.Format(Properties);

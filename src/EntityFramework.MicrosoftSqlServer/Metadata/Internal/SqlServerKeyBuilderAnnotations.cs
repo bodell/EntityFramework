@@ -16,6 +16,11 @@ namespace Microsoft.Data.Entity.Metadata.Internal
 
         public new virtual bool Name([CanBeNull] string value) => SetName(value);
 
-        public virtual bool Clustered(bool value) => SetIsClustered(value);
+        public virtual bool Clustered(bool value)
+        {
+            var annotationsBuilder = (RelationalAnnotationsBuilder)Annotations;
+            var indexBuilder = ((InternalKeyBuilder)annotationsBuilder.EntityTypeBuilder).IndexBuilder;
+            return new SqlServerIndexBuilderAnnotations(indexBuilder, annotationsBuilder.ConfigurationSource).Clustered(value);
+        }
     }
 }

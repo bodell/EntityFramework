@@ -39,6 +39,11 @@ namespace Microsoft.Data.Entity.Metadata.Internal
             _principalToDependentConfigurationSource = initialConfigurationSource;
         }
 
+        public virtual InternalIndexBuilder IndexBuilder
+            => ModelBuilder
+                .Entity(Metadata.DeclaringEntityType.Name, ConfigurationSource.Convention)
+                .HasIndex(Metadata.Properties.Select(p => p.Name).ToList(), ConfigurationSource.Convention);
+
         public virtual InternalRelationshipBuilder DependentToPrincipal(
             [CanBeNull] string navigationToPrincipalName,
             ConfigurationSource configurationSource)
