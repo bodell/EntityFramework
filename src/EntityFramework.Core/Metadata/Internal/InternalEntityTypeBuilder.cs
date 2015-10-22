@@ -217,7 +217,7 @@ namespace Microsoft.Data.Entity.Metadata.Internal
                     var derivedProperties = Metadata.FindDerivedProperties(propertyName);
                     detachedProperties = DetachProperties(derivedProperties);
                 }
-                else if(existingProperty.DeclaringEntityType != Metadata)
+                else if (existingProperty.DeclaringEntityType != Metadata)
                 {
                     return ModelBuilder.Entity(existingProperty.DeclaringEntityType.Name, ConfigurationSource.Convention)
                         .InternalProperty(propertyName, propertyType, configurationSource);
@@ -1003,7 +1003,8 @@ namespace Microsoft.Data.Entity.Metadata.Internal
             Key principalKey,
             ConfigurationSource configurationSource,
             bool runConventions)
-            => _relationshipBuilders.Value.GetOrAdd(
+        {
+            var relationship = _relationshipBuilders.Value.GetOrAdd(
                 () => null,
                 () => Metadata.AddForeignKey(dependentProperties, principalKey, principalType),
                 fk => new InternalRelationshipBuilder(fk, ModelBuilder, null),
@@ -1014,16 +1015,7 @@ namespace Microsoft.Data.Entity.Metadata.Internal
 
             if (relationship != null)
             {
-                HasIndex(dependentProperties, configurationSource);
-
-                foreach (var foreignKeyProperty in dependentProperties)
-                {
-                    var propertyBuilder = ModelBuilder.Entity(foreignKeyProperty.DeclaringEntityType.Name, ConfigurationSource.Convention)
-                        .Property(foreignKeyProperty.Name, ConfigurationSource.Convention);
-
-                    propertyBuilder.UseValueGenerator(null, ConfigurationSource.Convention);
-                    propertyBuilder.ValueGenerated(null, ConfigurationSource.Convention);
-                }
+                HasIndex(relationship.Metadata.Properties, configurationSource);
             }
 
             return relationship;

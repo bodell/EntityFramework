@@ -3,26 +3,22 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Data.Entity.Internal;
 
 namespace Microsoft.Data.Entity.Metadata.Internal
 {
     internal static class MetadataHelper
     {
-        public static void CheckSameEntityType(IReadOnlyList<Property> properties, string argumentName)
+        public static void CheckPropertiesInEntityType(IReadOnlyList<Property> properties, EntityType entityType, string argumentName)
         {
-            if (properties.Count > 1)
+            foreach (var property in properties)
             {
-                var entityType = properties[0].DeclaringEntityType;
-
-                for (var i = 1; i < properties.Count; i++)
+                if (property.DeclaringEntityType != entityType
+                    && entityType.FindProperty(property.Name) != property)
                 {
-                    if (properties[i].DeclaringEntityType != entityType ||
-                        properties[i].DeclaringEntityType.GetProperty(properties[i].Name) != properties[i])
-                    {
-                        throw new ArgumentException(
-                            CoreStrings.InconsistentEntityType(argumentName));
-                    }
+                    throw new ArgumentException(
+                        CoreStrings.InconsistentEntityType(argumentName));
                 }
             }
         }

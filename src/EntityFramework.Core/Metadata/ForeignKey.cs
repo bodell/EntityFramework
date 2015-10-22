@@ -26,7 +26,7 @@ namespace Microsoft.Data.Entity.Metadata
         {
             Check.NotEmpty(dependentProperties, nameof(dependentProperties));
             Check.HasNoNulls(dependentProperties, nameof(dependentProperties));
-            MetadataHelper.CheckSameEntityType(dependentProperties, nameof(dependentProperties));
+            MetadataHelper.CheckPropertiesInEntityType(dependentProperties, dependentEntityType, nameof(dependentProperties));
             Check.NotNull(principalKey, nameof(principalKey));
             Check.NotNull(principalEntityType, nameof(principalEntityType));
 
