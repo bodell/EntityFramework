@@ -228,7 +228,7 @@ CREATE TABLE Users_Groups (
                     UseFluentApiOnly = UseFluentApiOnly,
                     TableSelectionSet = TableSelectionSet.All
                 });
-                var errorMessage = RelationalDesignStrings.MissingPrimaryKey("Alicia");
+                var errorMessage = RelationalDesignStrings.UnableToGenerateEntityType("Alicia", RelationalDesignStrings.PrimaryKeyNotDefined);
                 var expectedLog = new LoggerMessages
                 {
                     Warn =
@@ -237,7 +237,7 @@ CREATE TABLE Users_Groups (
                     }
                 };
                 AssertLog(expectedLog);
-                Assert.Contains(errorMessage, InMemoryFiles.RetrieveFileContents("testout", "Alicia.cs"));
+                Assert.Contains(errorMessage, InMemoryFiles.RetrieveFileContents("testout", Path.GetFileName(results.ContextFile)));
             }
         }
 
@@ -267,8 +267,8 @@ CREATE TABLE Principal ( Id INT);");
                 {
                     Warn =
                     {
-                        RelationalDesignStrings.MissingPrimaryKey("Principal"),
-                        RelationalDesignStrings.ForeignKeyScaffoldError("Dependent(PrincipalId)")
+                        RelationalDesignStrings.UnableToGenerateEntityType("Principal", RelationalDesignStrings.PrimaryKeyNotDefined),
+                        RelationalDesignStrings.ForeignKeyScaffoldErrorPrincipalTableScaffoldingError("Dependent(PrincipalId)", "Principal")
                     }
                 };
                 AssertLog(expectedLog);
@@ -279,7 +279,6 @@ CREATE TABLE Principal ( Id INT);");
                     {
                         "NoPrincipalPk" + DbSuffix + "Context.expected",
                         "Dependent.expected",
-                        "Principal.expected"
                     }
                 };
                 var actualFileSet = new FileSet(InMemoryFiles, "testout")

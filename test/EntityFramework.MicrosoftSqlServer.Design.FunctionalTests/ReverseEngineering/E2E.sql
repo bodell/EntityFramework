@@ -82,10 +82,6 @@ if exists (select * from sysobjects where id = object_id('dbo.TableWithUnmappabl
 	drop table "dbo"."TableWithUnmappablePrimaryKeyColumn"
 GO
 
-if exists (select * from sysobjects where id = object_id('dbo.ReferredToByTableWithUnmappablePrimaryKeyColumn') and sysstat & 0xf = 3)
-	drop table "dbo"."ReferredToByTableWithUnmappablePrimaryKeyColumn"
-GO
-
 if exists (select * from sysobjects where id = object_id('dbo.SelfReferencing') and sysstat & 0xf = 3)
 	drop table "dbo"."SelfReferencing"
 GO
@@ -327,24 +323,10 @@ CREATE TABLE "OneToOneFKToUniqueKeyDependent" (
 
 GO
 
-CREATE TABLE "ReferredToByTableWithUnmappablePrimaryKeyColumn" (
-	"ReferredToByTableWithUnmappablePrimaryKeyColumnID" "int" PRIMARY KEY,
-	"AColumn" nvarchar(20) NOT NULL,
-	"ValueGeneratedOnAddColumn" "int" IDENTITY(1, 1) NOT NULL,
-)
-
-GO
-
 CREATE TABLE "TableWithUnmappablePrimaryKeyColumn" (
 	"TableWithUnmappablePrimaryKeyColumnID" "hierarchyid" PRIMARY KEY,
 	"AnotherColumn" nvarchar(20) NOT NULL,
 	"TableWithUnmappablePrimaryKeyColumnFK" "int" NULL,
-	CONSTRAINT "FK_TableWithUnmappablePrimaryKeyColumn" FOREIGN KEY 
-	(
-		"TableWithUnmappablePrimaryKeyColumnFK"
-	) REFERENCES "dbo"."ReferredToByTableWithUnmappablePrimaryKeyColumn" (
-		"ReferredToByTableWithUnmappablePrimaryKeyColumnID"
-	),
 	CONSTRAINT "UK_TableWithUnmappablePrimaryKeyColumn" UNIQUE
 	(
 		"AnotherColumn" -- tests that RevEng can assign an alternate key on a table with a PK which cannot be mapped

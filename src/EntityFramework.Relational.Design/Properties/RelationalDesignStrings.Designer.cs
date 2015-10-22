@@ -53,19 +53,51 @@ namespace Microsoft.Data.Entity.Internal
         }
 
         /// <summary>
-        /// Could not scaffold the foreign key '{foreignKeyName}'. One of the referenced properties or the referenced table could not be found.
+        /// Could not scaffold the foreign key '{foreignKeyName}'. A key for '{columnsList}' was not found in the principal entity type '{principalEntityType}'.
         /// </summary>
-        public static string ForeignKeyScaffoldError([CanBeNull] object foreignKeyName)
+        public static string ForeignKeyScaffoldErrorPrincipalKeyNotFound([CanBeNull] object foreignKeyName, [CanBeNull] object columnsList, [CanBeNull] object principalEntityType)
         {
-            return string.Format(CultureInfo.CurrentCulture, GetString("ForeignKeyScaffoldError", "foreignKeyName"), foreignKeyName);
+            return string.Format(CultureInfo.CurrentCulture, GetString("ForeignKeyScaffoldErrorPrincipalKeyNotFound", "foreignKeyName", "columnsList", "principalEntityType"), foreignKeyName, columnsList, principalEntityType);
         }
 
         /// <summary>
-        /// Unable to identify the primary key for table '{tableName}'.
+        /// Could not scaffold the foreign key '{foreignKeyName}'. The referenced table could not be found.
         /// </summary>
-        public static string MissingPrimaryKey([CanBeNull] object tableName)
+        public static string ForeignKeyScaffoldErrorPrincipalTableNotFound([CanBeNull] object foreignKeyName)
         {
-            return string.Format(CultureInfo.CurrentCulture, GetString("MissingPrimaryKey", "tableName"), tableName);
+            return string.Format(CultureInfo.CurrentCulture, GetString("ForeignKeyScaffoldErrorPrincipalTableNotFound", "foreignKeyName"), foreignKeyName);
+        }
+
+        /// <summary>
+        /// Could not scaffold the foreign key '{foreignKeyName}'. The referenced table '{principalTableName}' could not be scaffolded.
+        /// </summary>
+        public static string ForeignKeyScaffoldErrorPrincipalTableScaffoldingError([CanBeNull] object foreignKeyName, [CanBeNull] object principalTableName)
+        {
+            return string.Format(CultureInfo.CurrentCulture, GetString("ForeignKeyScaffoldErrorPrincipalTableScaffoldingError", "foreignKeyName", "principalTableName"), foreignKeyName, principalTableName);
+        }
+
+        /// <summary>
+        /// Could not scaffold the foreign key '{foreignKeyName}' because some columns in the foreign key could not be scaffolded.
+        /// </summary>
+        public static string ForeignKeyScaffoldErrorPropertyNotFound([CanBeNull] object foreignKeyName)
+        {
+            return string.Format(CultureInfo.CurrentCulture, GetString("ForeignKeyScaffoldErrorPropertyNotFound", "foreignKeyName"), foreignKeyName);
+        }
+
+        /// <summary>
+        /// Could not scaffold the primary key for '{tableName}' because some columns in the primary key could not be scaffolded.
+        /// </summary>
+        public static string PrimaryKeyErrorPropertyNotFound([CanBeNull] object tableName)
+        {
+            return string.Format(CultureInfo.CurrentCulture, GetString("PrimaryKeyErrorPropertyNotFound", "tableName"), tableName);
+        }
+
+        /// <summary>
+        /// A table must have a primary key to be scaffolded.
+        /// </summary>
+        public static string PrimaryKeyNotDefined
+        {
+            get { return GetString("PrimaryKeyNotDefined"); }
         }
 
         /// <summary>
@@ -133,11 +165,11 @@ namespace Microsoft.Data.Entity.Internal
         }
 
         /// <summary>
-        /// Unable to generate EntityType {entityTypeName}. {errorMessage}
+        /// Unable to generate entity type for table '{tableName}': {errorMessage}
         /// </summary>
-        public static string UnableToGenerateEntityType([CanBeNull] object entityTypeName, [CanBeNull] object errorMessage)
+        public static string UnableToGenerateEntityType([CanBeNull] object tableName, [CanBeNull] object errorMessage)
         {
-            return string.Format(CultureInfo.CurrentCulture, GetString("UnableToGenerateEntityType", "entityTypeName", "errorMessage"), entityTypeName, errorMessage);
+            return string.Format(CultureInfo.CurrentCulture, GetString("UnableToGenerateEntityType", "tableName", "errorMessage"), tableName, errorMessage);
         }
 
         /// <summary>
